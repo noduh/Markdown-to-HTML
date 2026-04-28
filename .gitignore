@@ -1,3 +1,7 @@
 *.docx
 main
 .~lock*
+
+# Added by cargo
+
+/target
