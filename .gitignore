@@ -1,6 +1,6 @@
 *.docx
-main
 .~lock*
+*.time
 
 # Added by cargo
 
