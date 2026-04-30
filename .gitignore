@@ -1,6 +1,7 @@
 *.docx
 .~lock*
 *.time
+*.pdf
 
 # Added by cargo
 
