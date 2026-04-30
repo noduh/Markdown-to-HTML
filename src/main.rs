@@ -9,7 +9,14 @@ fn main() {
         .read_line(&mut file_path)
         .expect("Failed to read line");
 
+    let file_path = file_path.trim().to_string();
+
+    let file_contents = file_to_string(file_path);
+    println!("The file reads:\n{file_contents}\nEOF");
+}
+
+fn file_to_string(file_path: String) -> String {
     let file_contents = fs::read_to_string(file_path.trim()).expect("Failed to read the file");
 
-    println!("The file reads:\n\n{file_contents}");
+    file_contents
 }
