@@ -22,25 +22,49 @@ fn file_to_string(file_path: &str) -> String {
     file_contents
 }
 
-// Nested Map Data Structure
-pub enum NestedMapNodeData<'a> {
-    Value(String),
-    Map(HashMap<String, NestedMap<'a>>),
-}
-pub struct NestedMap<'a> {
-    data: NestedMapNodeData<'a>,
-    parent_node: Option<&'a HashMap<String, NestedMapNodeData<'a>>>, // if it has a parent, the parent is a map
-    child_node: Option<&'a NestedMapNodeData<'a>>,                   // a child could be anything
-}
-impl<'a> NestedMap<'a> {
-    pub fn new() -> Self {
-        Self {
-            data: , // I DON'T KNOW YET WHAT TO PUT HERE
-            parent_node: None, // it is the root, therefore no parent
-            child_node: None,
-        }
-    }
-    pub fn insert(&mut self, key: &str, value: NestedMapNodeData) {
-        self.root_node.insert(key.to_string(), value);
-    }
+// Nested Formatting Structure
+enum Format {
+    // Plain Text
+    Raw,  // possibly contains more formatting
+    Text, // contains text inside formatting
+
+    // Headings
+    Heading1,
+    Heading2,
+    Heading3,
+    Heading4,
+    Heading5,
+    Heading6,
+
+    // Sectioning Text
+    Paragraph,
+    LineBreak,
+    BlockQuote,
+
+    // Emphasis
+    Bold,
+    Italic,
+
+    // Lists
+    OrderedList,
+    OrderedListItem,
+    UnorderedList,
+    UnorderedListItem,
+    ElementInList, // This is like adding a paragraph below an item while maintaining continuity. Important for markdown but probably ignored in HTML
+
+    // Code
+    CodeBlock(Option<String>), // the string holds the language for syntax highlighting
+    InlineCode,
+
+    // Horizontal Rule
+    HorizontalRule,
+
+    // Links
+    HyperLink(String, Option<String>), // first string is href, second string is the title if the link has one
+    Address,                           // a link or email address without regular text
+    FootnoteLink(u32), // comes after the text that has a reference. u32 is the id (to match link to note)
+    Footnote(u32), // is the data to be linked to as a footnote. u32 is the id (to match link to note)
+
+    // Images
+    Image(String, String, Option<String>), // first string is source, second is alt text, third is title
 }
