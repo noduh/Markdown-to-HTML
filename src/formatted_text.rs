@@ -1,9 +1,6 @@
 // Nested Formatting Structure
 pub enum Format {
-    Head, // used only at the beginning
-
     // Plain Text
-    Raw,  // possibly contains more formatting
     Text, // contains text inside formatting
 
     // Headings
@@ -51,6 +48,7 @@ pub enum Content {
     // This lets me nest things
     JustText(String),
     ChildNode(Box<FormattedText>),
+    Bottom, // Signals that this is the deepest this branch goes
 }
 
 pub struct FormattedText {
@@ -60,18 +58,39 @@ pub struct FormattedText {
 }
 
 impl FormattedText {
-    pub fn new(format: Format, content: Vec<Content>) -> Self {
+    pub fn new(format: Format) -> Self {
         Self {
             format: format,
-            content: content,
+            content: Vec::new(),
         }
     }
 
     pub fn default() -> Self {
         Self {
-            format: Format::Head, // This is the root of it all
-            content: vec![],
+            format: Format::Text,
+            content: Vec::new(),
         }
+    }
+
+    pub fn append_format(format: Format) {
+        // this adds a new branch
+        // TODO: change this to do depth first using get_end()
+        FormattedText::new(format);
+    }
+
+    pub fn append_text(&mut self, string_to_append: &str) {
+        // TODO: change this to use get_end() to add using depth-first
+        self.content
+            .push(Content::JustText(string_to_append.to_string()));
+    }
+
+    fn get_end(&mut self) -> &mut FormattedText {
+        // This will "go deep" and find the furthest it can go using depth first
+        if matches!(self.content.last(), Some(Content::Bottom)) {
+            // short circuit and end recursion
+            return self;
+        };
+        // TODO: begin going deep
     }
 }
 
