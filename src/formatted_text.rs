@@ -1,3 +1,5 @@
+use std::collections::btree_set::Iter;
+
 // Nested Formatting Structure
 pub enum Format {
     // Plain Text
@@ -84,13 +86,31 @@ impl FormattedText {
             .push(Content::JustText(string_to_append.to_string()));
     }
 
-    fn get_end(&mut self) -> &mut FormattedText {
+    fn get_end(&mut self) -> Option<&mut FormattedText> {
         // This will "go deep" and find the furthest it can go using depth first
         if matches!(self.content.last(), Some(Content::Bottom)) {
-            // short circuit and end recursion
-            return self;
+            // short circuit and end recursion if there is already an end to this branch
+            return None;
         };
-        // TODO: begin going deep
+        // Recursively find the bottom last FormattedText
+        if let Some(Content::ChildNode(child)) = self
+            .content
+            .iter_mut()
+            .rfind(|element| matches!(element, Content::ChildNode(_)))
+        {
+            // If there is a child at the end then run this
+            if !matches!(child.content.last(), Some(Content::Bottom)) {
+                // Start searching the child if it doesn't have an end yet
+                let child_end: Option<&mut FormattedText> = child.get_end();
+                if child_end.is_some() {
+                    // we've found the end. time to return and bubble the end to the top
+                    return child_end;
+                }
+            }
+        };
+
+        // return yourself if nothing else
+        Some(self)
     }
 }
 
